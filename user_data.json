@@ -1,7 +1,7 @@
 {
     "Bobik": {
-        "total_messages": 132,
-        "session_messages": 21
+        "total_messages": 162,
+        "session_messages": 4
     },
     "Абалдуй": {
         "total_messages": 21,
@@ -10,5 +10,13 @@
     "Бобик": {
         "total_messages": 38,
         "session_messages": 38
+    },
+    "ищишл": {
+        "total_messages": 1,
+        "session_messages": 1
+    },
+    "bobik": {
+        "total_messages": 2,
+        "session_messages": 2
     }
 }
