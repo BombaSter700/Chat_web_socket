@@ -1,7 +1,7 @@
 {
     "Bobik": {
-        "total_messages": 162,
-        "session_messages": 4
+        "total_messages": 183,
+        "session_messages": 2
     },
     "Абалдуй": {
         "total_messages": 21,
@@ -18,5 +18,9 @@
     "bobik": {
         "total_messages": 2,
         "session_messages": 2
+    },
+    "NASH SLON": {
+        "total_messages": 1,
+        "session_messages": 1
     }
 }

@@ -4,11 +4,9 @@ import json
 import os
 from datetime import datetime
 
-# Сохраняем всех клиентов, подключенных к серверу
 client_list = []
 user_data_file = 'user_data.json'  # файлик с данными пользователей
 
-# Получаем текущее время для имени лог-файла при запуске сервера
 log_filename = f"log_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.txt"
 
 def load_user_data():
@@ -41,8 +39,6 @@ async def handler(websocket, path):
 
     welcome_message = f"Привет, {nickname}!"
     await websocket.send(welcome_message)
-
-    # Логируем подключение пользователя
     log_message(f"{nickname} подключился к серверу.")
 
     try:
@@ -53,12 +49,12 @@ async def handler(websocket, path):
 
             # Обработка команды /userinfo
             if message.strip() == '/userinfo':
-                # Формируем сообщение со статистикой
                 stats_message = (f"Статистика для {nickname}:\n"
                                  f"Сообщений за сессию: {user_data[nickname]['session_messages']}\n"
                                  f"Сообщений всего: {user_data[nickname]['total_messages']}")
                 await websocket.send(stats_message)
                 log_message(f"Отправлена статистика для {nickname}")
+
             # Обработка команды /calc
             elif message.strip() == '/calc':
                 # Отправляем запрос на ввод выражения
@@ -75,12 +71,21 @@ async def handler(websocket, path):
                     await websocket.send(error_message)
                     log_message(f"{nickname} получил ошибку при вычислении: {e}")
 
+            # Обработка команды /topusers
+            elif message.strip() == '/topusers':
+                 #Сортировка пользователей по количеству сообщений
+                    sorted_users = sorted(user_data.items(), key=lambda x: x[1]['total_messages'], reverse=True)
+                    top_users_messages = "Топ пользователей по сообщениям:\n"
+                    for idx, (username, data) in enumerate(sorted_users[:3], 1):
+                        top_users_messages += f"{idx}. {username} - {data['total_messages']} сообщений\n"
+                    
+                    # Отправляем список топ-3 пользователей
+                    await websocket.send(top_users_messages)
+                    log_message(f"Отправлен топ пользователей для {nickname}")
+
             else:
-                # Увеличиваем счётчик сообщений для обычных сообщений
                 user_data[nickname]['session_messages'] += 1
                 user_data[nickname]['total_messages'] += 1
-
-                # Сохраняем данные пользователя после каждого сообщения
                 save_user_data(user_data)
 
                 # Рассылаем сообщение всем подключённым клиентам
@@ -102,7 +107,6 @@ async def broadcast(message):
 
 async def main():
     async with websockets.serve(handler, "", 8080):
-        print("Сервер запущен на порту 8080")
         log_message("Сервер запущен и готов принимать подключения.")
         await asyncio.Future()  # Бесконечная работа
 
